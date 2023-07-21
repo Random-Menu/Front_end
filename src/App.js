@@ -1,7 +1,36 @@
-import logo from './logo.svg';
+
 import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const MenuText = () => {
+  const [data, setData] = useState([]);   //변경이 있을 때마다 불러옴
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://your-backend-api.com/data'); //api 받아오는 주소
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      {/* 받아온 데이터 사용 */}
+      {data.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
+};
 
 function App() {
+
   return (
     <div className="App">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -13,7 +42,7 @@ function App() {
           <div className="nav-mid nav-margin">      {/* nav 중단 (메뉴) */}
             
               <li>메뉴추천</li>                       
-              <li>메뉴판 스캔</li>
+              <li className='choice'>메뉴판 스캔</li>
               <li>미니 게임</li>
             
           </div>
@@ -48,3 +77,4 @@ function App() {
 }
 
 export default App;
+
