@@ -4,29 +4,38 @@ import { useState } from 'react';
 import axios from 'axios';
 
 function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [menuTextArray, setMenuTextArray] = useState([]);
-  const [text, setText] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null); //file 선택 usestate
+  const [menuTextArray, setMenuTextArray] = useState([]); //메뉴 텍스트 
+  const [text, setText] = useState("");                   //수동 추가 
+  const [newText, setNewText] = useState("");             //추가하기 
 
-  const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]);
+  const handleFileSelect = (event) => {         //file선택
+    setSelectedFile(event.target.files[0]);     //등록
+  };          
+
+  const handleChange = (event) => {     //글자 등록시
+    setNewText(event.target.value);     //값을 setNewText에 저장
+  };
+  
+  const handleAddClick = () => {          //추가하기 버튼을 누를시
+    if(newText===""){                 //아무것도 쓰여있지 않다면 return
+      return;
+    }
+    setText(text+newText);          //setText에 newText넣기 (text는 초기값을 위해 사용)
+    setNewText("");                 //이후 초기화
   };
 
-  const handleChange = (event) => {
-    setText(event.target.value);
-  };
-
-  async function handleUpload() {
-    if (!selectedFile) {
+  async function handleUpload() {     //업로드 버튼
+    if (!selectedFile) {               //선택된 파일이 없으면 선택 요청
       alert('파일을 먼저 선택해주세요.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', selectedFile);
+    const formData = new FormData();      //http 통신을 위한 formdata 객체
+    formData.append('image', selectedFile); //image는 key, selectedFile은 value
 
-    try {
-      const response = await axios.post(
+    try {                                 //backend와의 통신을 위한 try-catch 구문
+      const response = await axios.post(          //백엔드에 보내는 axios.post (post는 보내는 역할, axios는 통신을 위한 api, await)
         'https://your-backend-endpoint/upload',
         formData,
         {
@@ -81,11 +90,12 @@ function App() {
               <div className="box">
                   {text}&nbsp;
                 </div>             {/* 표가 나오는 박스 */}
-              <div className="add"><input type='text' value={text} onChange={handleChange}/>추가하기</div>
+              <div className="add"><input type='text' value={newText} onChange={handleChange}/>
+              <button onClick={handleAddClick}>추가하기</button></div>
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
